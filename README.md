@@ -1,5 +1,6 @@
 # Docker  
-- [ ] In this Repository we will Create Docker images for spring applications and chekin this image in docker hub.  
+
+- [x] Create Docker images for spring applications and push this image to docker hub 
 - [ ] We will work on Integrating multiple dodcker images using Docker Compose file.  Create tow images like spring boot and Database they should be communicating with each other.  
 - [ ] We will work on implementing a sample micro service application with Docker and swarm cluster.  
 
