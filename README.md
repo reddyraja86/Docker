@@ -1,7 +1,7 @@
 # Docker  
 
 - [x] Create Docker images for spring applications and push this image to docker hub 
-- [ ] Springboot application with Docker database image.  
+- [x] Springboot application with Docker database image.  
 - [ ] We will work on Integrating multiple dodcker images using Docker Compose file. Create two images like spring boot and Database they should be communicating with each other.  
 - [ ] We will work on implementing a sample micro service application with Docker and swarm cluster.  
 
@@ -90,13 +90,55 @@ NOTE :  jar file name should always be small letter or else spotify plug will fa
         
  *  Now push the image to Dockerhub.  
  
-        docker push javajvm007/springdockerdemo:0.0.1-SNAPSHOT  
-        
+        docker push javajvm007/springdockerdemo:0.0.1-SNAPSHOT
+       
+## Springboot application with Docker database image :
+
+*  Create a docker image for mysql database.
+
+                docker container run -d   -p 2012:3306  --name mysql-docker-container   -e MYSQL_ROOT_PASSWORD=root123   -e             MYSQL_DATABASE=docker_db   -e MYSQL_USER=app_user      -e MYSQL_PASSWORD=test123  mysql:latest
+                
+ * Update the application.prop file 
  
+                # Communicating using the Docker Sql image without the spring app image
+                # we can see that the host name is localhost and port number is the one which we exposed
+                #spring.datasource.url = jdbc:mysql://localhost:2012/docker_db
+                spring.datasource.url = jdbc:mysql:// mysql-docker-container:3306/docker_db
+                spring.datasource.username = app_user
+                spring.datasource.password = test123
 
+                ## Hibernate Properties
+                # The SQL dialect makes Hibernate generate better SQL for the chosen database
+                spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 
+                # Hibernate ddl auto (create, create-drop, validate, update)
+                spring.jpa.hibernate.ddl-auto = update
 
+<b>
+ We need to provide localhost: exposed port in order to connect with exlipse spring project.  
+ Incase of Springboot image we need to provide the sql image name : internal port number in docker container
+</b>
 
+* Docker file  
+
+                FROM openjdk:8-jdk-alpine
+                LABEL maintainer="javajvm007@gmail.com"
+                EXPOSE 8080
+                ADD /target/springdockermysqldemo.jar springdockermysqldemo.jar
+                ENTRYPOINT ["java", "-jar", "springdockermysqldemo.jar"] 
+
+* Now build the docker image 
+               
+               docker build ./ -t springdockermysqldemo
+                
+* To communicate between two different containers they should be  in same network or we need to link these containers.  
+
+        docker run -t --name spring-jpa-app-container --link mysql-docker-container:mysql -p 8087:8080 spring-jpa-app
+        
+ * We can access the application using the http://localhost:8087/api/users API.
+ 
+ 
+## Springboot application with Docker database image using docker compose file :
 
 
 
