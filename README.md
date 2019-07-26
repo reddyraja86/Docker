@@ -138,9 +138,45 @@ NOTE :  jar file name should always be small letter or else spotify plug will fa
  * We can access the application using the http://localhost:8087/api/users API.
  
  
-## Springboot application with Docker database image using docker compose file :
+## Springboot application with mysql Docker database image using docker compose file :
+
+* From the above applicaation we need to comment the application.prop file as the prop will be provided in docker compose file.  
+
+* Create a docker compose file.  
+
+                FROM openjdk:8-jdk-alpine
+                LABEL maintainer="javajvm007@gmail.com"
+                EXPOSE 8080
+                ADD /target/springdockercomposedemo.jar springdockercomposedemo.jar
+                ENTRYPOINT ["java", "-jar", "springdockercomposedemo.jar"] 
 
 
+* Build this image in docker console.  
+
+* Create docker compose file and save it as docker-compose.yml file
+
+* Add the configuration details in environment tag.
+
+* Use docker-compose up  command to start the containers
 
 
-
+                version: '3.7'
+                services:
+                  sql-database:
+                    image: mysql:8.0.14
+                    environment:
+                      - MYSQL_ROOT_PASSWORD=password
+                      - MYSQL_USER=dbuser
+                      - MYSQL_PASSWORD=dbpass
+                      - MYSQL_DATABASE=usersdb
+                      - MYSQL_ONETIME_PASSWORD=true
+                  springdockercomposedemo:
+                    image: springdockercomposedemo:latest
+                    ports:
+                      - 8080:8080
+                    depends_on:
+                      - sql-database
+                    environment:
+                      - SPRING_DATASOURCE_URL=jdbc:mysql://sql-database/usersdb?useSSL=false&allowPublicKeyRetrieval=true
+                      - SPRING_DATASOURCE_USERNAME=dbuser
+                      - SPRING_DATASOURCE_PASSWORD=dbpass
