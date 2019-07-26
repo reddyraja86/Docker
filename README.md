@@ -2,7 +2,7 @@
 
 - [x] Create Docker images for spring applications and push this image to docker hub 
 - [x] Springboot application with Docker database image.  
-- [ ] We will work on Integrating multiple dodcker images using Docker Compose file. Create two images like spring boot and Database they should be communicating with each other.  
+- [x] We will work on Integrating multiple dodcker images using Docker Compose file. Create two images like spring boot and Database they should be communicating with each other.  
 - [ ] We will work on implementing a sample micro service application with Docker and swarm cluster.  
 
 ## Spring boot with Docker Image :
